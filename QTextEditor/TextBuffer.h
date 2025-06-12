@@ -5,7 +5,8 @@
 //  Created by Bhavik Ostwal on 09/06/25.
 //
 
-#pragma once
+#ifndef TEXTBUFFER_H
+#define TEXTBUFFER_H
 #include <string>
 
 class TextBuffer {
@@ -25,3 +26,5 @@ public:
 private:
     std::string buffer; // will later be replaced with GapBuffer logic
 };
+
+#endif
