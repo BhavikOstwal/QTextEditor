@@ -21,9 +21,13 @@ EditorWidget::EditorWidget(QWidget* parent) : QWidget(parent) {
 
 void EditorWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
-    QFont font("Monaco", 16);
+//    QFont font("Monaco", 16);
+//    QFont font("JetBrains Mono", 14);
+    QFont font("Fira Code", 16);
+//    QFont font("Menlo", 16);
     painter.setFont(font);
     
+    // Displaying Text Correctly for multi-line text
     QString text = QString::fromUtf8(editor.getBuffer());
     QStringList lines = text.split('\n');
     int y = 50;
@@ -31,15 +35,60 @@ void EditorWidget::paintEvent(QPaintEvent* event) {
         painter.drawText(10, y, line);
         y += painter.fontMetrics().height(); // Move down for next line
     }
-    painter.drawText(10, 50, text);
 
-    // Draw cursor
-//    if (newLine) {
-        
+
+
+//------------------ Ignore this Cursor position part -----------------------------------
+//    int cursorPosX = editor.getCursor();
+//    int cursorPosY = 0;
+//
+//    int i = 0;
+//    bool stoppedAtEnd = false;
+//    qDebug() << "Cursor position Before: " << cursorPosX;
+//    for(const QChar& c : text) {
+//        if (c == '\n') {
+//            stoppedAtEnd = true;
+//            cursorPosX -= lines[i].size()+1;
+//            cursorPosY += painter.fontMetrics().height();
+//            i++;
+//        }
+//        stoppedAtEnd = false;
 //    }
+//    qDebug() << "Cursor position After: " << cursorPosX;
+//
+//    if (text.back() == '\n') {
+//        cursorPosX--;
+//    }
+//    QFontMetrics fm(font);
+//    int cursorX = 10 + fm.horizontalAdvance(text.left(cursorPosX));
+//    if (showCursor) painter.drawLine(cursorX, 30+y, cursorX, 55+y);
+//    if (showCursor) painter.drawLine(cursorX, 30+cursorPosY, cursorX, 55+cursorPosY);
+//------------------ Ignore this Cursor position part -----------------------------------
+    
+    
+    // Displaying Cursor Correctly for multi-line text
+    int cursorIndex = editor.getCursor();
+    int x = 10;
+    int yc = 50;
     QFontMetrics fm(font);
-    int cursorX = 10 + fm.horizontalAdvance(text.left(editor.getCursor()));
-    if (showCursor) painter.drawLine(cursorX, 30, cursorX, 55);
+    int index = 0;
+    for (const QString& line : lines)
+    {
+        if (cursorIndex <= index + line.length()) {
+            // Cursor is within this line
+            int column = cursorIndex - index;
+            int cursorX = x + fm.horizontalAdvance(line.left(column));
+            int cursorY = yc;
+
+            if (showCursor) {
+                painter.drawLine(cursorX, cursorY - fm.ascent(), cursorX, cursorY + fm.descent());
+            }
+            break;
+        }
+
+        index += line.length() + 1; // +1 for '\n'
+        yc += fm.height();
+    }
 }
 
 void EditorWidget::keyPressEvent(QKeyEvent* event) {

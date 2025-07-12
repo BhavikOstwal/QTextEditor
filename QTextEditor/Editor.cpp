@@ -7,41 +7,80 @@
 
 #include "Editor.h"
 
-TextEditor::TextEditor() : length(0), cursor(0) {
-    for (int i = 0; i < MAX; ++i)
-        buffer[i] = '\0';
+TextEditor::TextEditor() : K(128), left(0), right(10), length(0), cursor(0) {
+    buffer = new char[MAX];
+}
+
+TextEditor::~TextEditor() {
+    delete [] buffer;
 }
 
 void TextEditor::insertChar(char c) {
     if (length >= MAX || cursor > length) return;
+    
+    if (left == right) {
+        grow(); // Gap needs growth :)
+    }
+    
+    if (cursor == length) {
+        right++;
+    }
+    buffer[cursor] = c;
+    cursor++;
+    left++;
+    length++;
 
-    for (int i = length; i > cursor; --i)
-        buffer[i] = buffer[i - 1];
-
-    buffer[cursor++] = c;
-    ++length;
 }
 
 void TextEditor::deleteChar() {
     if (cursor == 0) return;
-
-    for (int i = cursor - 1; i < length - 1; ++i)
-        buffer[i] = buffer[i + 1];
-
-    buffer[--length] = '\0';
-    --cursor;
+    
+    left--;
+    cursor--;
+    length--;
 }
 
 void TextEditor::moveLeft() {
-    if (cursor > 0) --cursor;
+    if (cursor > 0) {
+        left--;
+        right--;
+        buffer[right] = buffer[left];
+        cursor--;
+    }
 }
 
 void TextEditor::moveRight() {
-    if (cursor < length) ++cursor;
+    if (cursor < length) {
+        buffer[left] = buffer[right];
+        left++;
+        right++;
+        cursor++;
+    }
 }
 
-const char* TextEditor::getBuffer() const {
-    return buffer;
+void TextEditor::grow() {
+    char* grownBuffer = new char[length + K];
+    
+    for(int i = 0; i < left; i++) {
+        grownBuffer[i] = buffer[i];
+    }
+    
+    for(int j = right; j < length; j++) {
+        grownBuffer[j+K] = buffer[j];
+    }
+    
+    right += K;
+    buffer = grownBuffer;
+}
+
+std::string TextEditor::getBuffer() const {
+    std::string displayText;
+    displayText.reserve(length);
+    
+    displayText.append(buffer, buffer+left);
+    displayText.append(buffer+right, buffer+length+right-left);
+    
+    return displayText;
 }
 
 int TextEditor::getCursor() const {
