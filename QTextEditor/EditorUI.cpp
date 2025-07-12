@@ -21,10 +21,10 @@ EditorWidget::EditorWidget(QWidget* parent) : QWidget(parent) {
 
 void EditorWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
-//    QFont font("Monaco", 16);
-//    QFont font("JetBrains Mono", 14);
+    // QFont font("Monaco", 16);
+    // QFont font("JetBrains Mono", 14);
+    // QFont font("Menlo", 16);
     QFont font("Fira Code", 16);
-//    QFont font("Menlo", 16);
     painter.setFont(font);
     
     // Displaying Text Correctly for multi-line text
