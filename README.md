@@ -43,31 +43,13 @@ QTextEditor/
 
 Ensure you have **Qt 6** and a C++ compiler installed.
 
-### Using CMake (Recommended)
+### Using CMake (to be updated)
 
-```bash
-mkdir build
-cd build
-cmake ..
-make
-./QTextEditor
-```
-
-### Using qmake (Qt projects)
-
-If you're using `.pro` file:
-
-```bash
-qmake
-make
-./QTextEditor
-```
-
----
 
 ## Dependencies
 
 * Qt Core
+* Qt GUI
 * Qt Widgets
 * C++17 or higher (recommended)
 
